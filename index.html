@@ -1,31 +1,270 @@
-<section class="products">
-    <h2>Featured Perfumes</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOR' PERFUME</title>
 
-    <div class="grid">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=500"
-                 width="100%" style="border-radius:10px;">
-            <h3>Royal Oud</h3>
-            <p>Rich woody fragrance with luxurious oriental notes.</p>
-            <div class="price">25 JOD</div>
-        </div>
+body{
+background:#f5f5f5;
+color:#333;
+line-height:1.6;
+}
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=500"
-                 width="100%" style="border-radius:10px;">
-            <h3>Golden Essence</h3>
-            <p>Elegant blend of floral and amber accords.</p>
-            <div class="price">22 JOD</div>
-        </div>
+header{
+background:#000;
+color:white;
+text-align:center;
+padding:25px;
+}
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1615634262417-99ba5f4d4c84?w=500"
-                 width="100%" style="border-radius:10px;">
-            <h3>Midnight Touch</h3>
-            <p>A sophisticated fragrance for evening occasions.</p>
-            <div class="price">28 JOD</div>
-        </div>
+header h1{
+font-size:42px;
+letter-spacing:4px;
+color:#d4af37;
+}
 
-    </div>
+header p{
+margin-top:10px;
+}
+
+.hero{
+background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),
+url('https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=80');
+background-size:cover;
+background-position:center;
+color:white;
+text-align:center;
+padding:120px 20px;
+}
+
+.hero h2{
+font-size:48px;
+margin-bottom:20px;
+}
+
+.hero p{
+max-width:700px;
+margin:auto;
+font-size:18px;
+}
+
+.btn{
+display:inline-block;
+margin-top:25px;
+padding:14px 28px;
+background:#d4af37;
+color:black;
+text-decoration:none;
+border-radius:6px;
+font-weight:bold;
+}
+
+.section{
+padding:70px 20px;
+max-width:1200px;
+margin:auto;
+}
+
+.section-title{
+text-align:center;
+font-size:34px;
+margin-bottom:15px;
+}
+
+.section-text{
+text-align:center;
+max-width:800px;
+margin:0 auto 40px;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 3px 15px rgba(0,0,0,.08);
+text-align:center;
+}
+
+.card img{
+width:140px;
+height:140px;
+object-fit:cover;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.card h3{
+margin-bottom:10px;
+}
+
+.price{
+font-size:22px;
+font-weight:bold;
+color:#d4af37;
+margin-top:10px;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+margin-top:30px;
+}
+
+.feature{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 3px 15px rgba(0,0,0,.08);
+text-align:center;
+}
+
+.contact{
+background:#111;
+color:white;
+text-align:center;
+padding:60px 20px;
+}
+
+footer{
+background:black;
+color:white;
+text-align:center;
+padding:20px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<h1>LOR' PERFUME</h1>
+<p>Luxury Fragrances Collection</p>
+</header>
+
+<section class="hero">
+<h2>Discover Your Signature Scent</h2>
+<p>
+Experience elegance through carefully selected fragrances crafted
+to leave a lasting impression. Find the perfect scent for every moment.
+</p>
+
+<a class="btn" href="https://wa.me/962787727783">
+Order via WhatsApp
+</a>
 </section>
+
+<section class="section">
+<h2 class="section-title">Featured Collection</h2>
+
+<p class="section-text">
+Explore our most loved fragrances inspired by luxury, confidence,
+and timeless style.
+</p>
+
+<div class="products">
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=300&q=80">
+<h3>Royal Oud</h3>
+<p>
+Rich oriental notes blended with luxurious oud wood
+for a sophisticated and unforgettable experience.
+</p>
+<div class="price">25 JOD</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=300&q=80">
+<h3>Golden Essence</h3>
+<p>
+A refined combination of floral freshness and warm amber
+creating elegance that lasts all day.
+</p>
+<div class="price">22 JOD</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=300&q=80">
+<h3>Midnight Touch</h3>
+<p>
+A bold fragrance designed for evening occasions,
+blending mystery and confidence.
+</p>
+<div class="price">28 JOD</div>
+</div>
+
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">Why Choose LOR' PERFUME?</h2>
+
+<div class="features">
+
+<div class="feature">
+<h3>Premium Quality</h3>
+<p>
+Carefully selected fragrances made to deliver a luxurious experience.
+</p>
+</div>
+
+<div class="feature">
+<h3>Long Lasting</h3>
+<p>
+High-quality ingredients that keep your scent noticeable for hours.
+</p>
+</div>
+
+<div class="feature">
+<h3>Affordable Luxury</h3>
+<p>
+Luxury-inspired perfumes at prices everyone can enjoy.
+</p>
+</div>
+
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">About Us</h2>
+
+<p class="section-text">
+LOR' PERFUME is more than a fragrance store.
+We believe every scent tells a story and creates lasting memories.
+Our mission is to provide elegant, premium-quality fragrances that
+reflect your personality and style while remaining affordable and accessible.
+</p>
+</section>
+
+<section class="contact">
+<h2>Contact Us</h2>
+<p>WhatsApp: +962 78 772 7783</p>
+<br>
+
+<a class="btn" href="https://wa.me/962787727783">
+Chat on WhatsApp
+</a>
+</section>
+
+<footer>
+© 2026 LOR' PERFUME. All Rights Reserved.
+</footer>
+
+</body>
+</html>
