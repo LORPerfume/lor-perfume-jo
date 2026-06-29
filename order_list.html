@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h1>الطلبات</h1>
+<form method="get" class="search">
+    <input type="text" name="q" value="{{ q }}" placeholder="بحث باسم العميل أو الهاتف أو رقم التتبع">
+    <select name="status">
+        <option value="">كل الحالات</option>
+        <option value="new">جديد</option>
+        <option value="confirmed">مؤكد</option>
+        <option value="with_delivery">مع شركة التوصيل</option>
+        <option value="delivered">تم التسليم</option>
+        <option value="cancelled">ملغي</option>
+        <option value="returned">راجع</option>
+    </select>
+    <button>بحث</button>
+    <a class="btn" href="/orders/new/">إضافة طلب</a>
+</form>
+<table>
+    <tr><th>رقم</th><th>العميل</th><th>الهاتف</th><th>الحالة</th><th>الدفع</th><th>شركة التوصيل</th><th>الإجمالي</th><th>المتبقي</th></tr>
+    {% for o in orders %}
+    <tr>
+        <td><a href="/orders/{{ o.id }}/">#{{ o.id }}</a></td>
+        <td>{{ o.customer.name }}</td>
+        <td>{{ o.customer.phone }}</td>
+        <td>{{ o.get_status_display }}</td>
+        <td>{{ o.get_payment_status_display }}</td>
+        <td>{{ o.delivery_company|default:"-" }}</td>
+        <td>{{ o.total_amount }}</td>
+        <td>{{ o.remaining_amount }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

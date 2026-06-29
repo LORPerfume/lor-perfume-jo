@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h1>الصناديق النقدية</h1>
+<a class="btn" href="/cashboxes/transaction/new/">إضافة حركة صندوق</a>
+<table>
+    <tr><th>الصندوق</th><th>رصيد افتتاحي</th><th>الرصيد الحالي</th></tr>
+    {% for b in cashboxes %}
+    <tr><td>{{ b.name }}</td><td>{{ b.opening_balance }}</td><td>{{ b.balance }}</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
