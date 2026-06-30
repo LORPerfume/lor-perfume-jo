@@ -1,1 +1,0 @@
-document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('table').forEach(t=>t.classList.add('table-hover'));});
