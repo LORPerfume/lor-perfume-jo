@@ -1,9 +1,0 @@
-{% extends 'core/base.html' %}
-{% block content %}
-<h1>{{ title }}</h1>
-<form method="post" class="form-card">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn">حفظ</button>
-</form>
-{% endblock %}
