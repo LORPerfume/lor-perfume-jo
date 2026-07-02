@@ -205,7 +205,7 @@ class Payment(models.Model):
         return f'{self.amount} - #{self.order.id}'
         TYPE_CHOICES=[('in','قبض'),('out','صرف')]
     cashbox=models.ForeignKey(CashBox, verbose_name='الصندوق', related_name='transactions', on_delete=models.CASCADE)
-    transaction_type=models.CharField('نوع الحركة', max_length=10, choices=TYPE_CHOICES)
+    transaction_type=models.CharField('نوع الحركة', max_length=10, choices=METHOD_CHOICES)
     amount=models.DecimalField('المبلغ', max_digits=14, decimal_places=2)
     description=models.CharField('البيان', max_length=255)
     date=models.DateTimeField('التاريخ', default=timezone.now)
