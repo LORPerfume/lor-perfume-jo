@@ -19,4 +19,5 @@ urlpatterns = [
     path('export/orders.xlsx', views.export_orders_xlsx, name='export_orders_xlsx'),
     path('export/inventory.xlsx', views.export_inventory_xlsx, name='export_inventory_xlsx'),
     path('export/receivables.xlsx', views.export_receivables_xlsx, name='export_receivables_xlsx'),
+    path('setup/', views.first_setup, name='first_setup'),
 ]
