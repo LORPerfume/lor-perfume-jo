@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model, login
 from decimal import Decimal
 from openpyxl import Workbook
 from django.contrib import messages
@@ -189,3 +190,31 @@ def export_receivables_xlsx(request):
         if o.remaining_amount > 0:
             rows.append([o.id,o.customer.name,o.customer.phone,o.product.name,o.get_payment_method_display(),o.delivery_company.name if o.delivery_company else '',float(o.total_amount),float(o.paid_amount),float(o.remaining_amount),o.get_status_display()])
     return _xlsx('receivables.xlsx', ['Order','Customer','Phone','Product','Type','Delivery Company','Total','Paid','Remaining','Status'], rows)
+    def first_setup(request):
+    User = get_user_model()
+
+    if User.objects.exists():
+        return redirect('login')
+
+    error = ''
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+
+        if not username:
+            error = 'أدخل اسم المستخدم'
+        elif password1 != password2:
+            error = 'كلمتا المرور غير متطابقتين'
+        elif len(password1) < 6:
+            error = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'
+        else:
+            user = User.objects.create_superuser(
+                username=username,
+                password=password1
+            )
+            login(request, user)
+            return redirect('dashboard')
+
+    return render(request, 'core/first_setup.html', {'error': error})
