@@ -12,4 +12,9 @@ path('cashboxes/',views.cashbox_list,name='cashbox_list'), path('cashboxes/trans
 path('delivery/',views.delivery_list,name='delivery_list'), path('delivery/new/',views.delivery_create,name='delivery_create'), path('delivery/statement/',views.delivery_statement,name='delivery_statement'),
 path('notes/new/',views.note_create,name='note_create'), path('attachments/new/',views.attachment_create,name='attachment_create'),
 path('calendar/',views.calendar_view,name='calendar'), path('reports/',views.reports,name='reports'), path('export/orders.csv',views.export_orders_csv,name='export_orders_csv'), path('export/inventory.csv',views.export_inventory_csv,name='export_inventory_csv'), path('export/orders.xlsx',views.export_orders_xlsx,name='export_orders_xlsx'), path('export/inventory.xlsx',views.export_inventory_xlsx,name='export_inventory_xlsx'), path('export/receivables.xlsx',views.export_receivables_xlsx,name='export_receivables_xlsx'),
+path(
+    'orders/<int:pk>/quick-update/',
+    views.order_quick_update,
+    name='order_quick_update',
+),
 ]
