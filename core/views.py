@@ -190,7 +190,7 @@ def export_receivables_xlsx(request):
         if o.remaining_amount > 0:
             rows.append([o.id,o.customer.name,o.customer.phone,o.product.name,o.get_payment_method_display(),o.delivery_company.name if o.delivery_company else '',float(o.total_amount),float(o.paid_amount),float(o.remaining_amount),o.get_status_display()])
     return _xlsx('receivables.xlsx', ['Order','Customer','Phone','Product','Type','Delivery Company','Total','Paid','Remaining','Status'], rows)
-    def first_setup(request):
+def first_setup(request):
     User = get_user_model()
 
     if User.objects.exists():
