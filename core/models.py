@@ -130,8 +130,17 @@ class Order(TimeStampedModel):
     def __str__(self): return f'#{self.id} - {self.customer.name}'
 
 class Payment(TimeStampedModel):
-    METHOD_CHOICES=[('cash','نقدي'),('cliq','كليك'),('bank','تحويل بنكي'),('card','بطاقة/فيزا'),('delivery','ذمم شركة التوصيل'),('wallet','محفظة إلكترونية'),('other','أخرى')]
-    order=models.ForeignKey(Order, verbose_name='الطلب/المعاملة', related_name='payments', on_delete=models.CASCADE)
+METHOD_CHOICES = [
+    ('unpaid', 'غير مدفوع'),
+    ('cash', 'نقدي'),
+    ('click', 'كليك'),
+    ('bank', 'تحويل بنكي'),
+    ('visa', 'بطاقة/فيزا'),
+    ('delivery', 'ذمم شركة التوصيل'),
+    ('wallet', 'محفظة إلكترونية'),
+    ('other', 'أخرى'),
+]
+order=models.ForeignKey(Order, verbose_name='الطلب/المعاملة', related_name='payments', on_delete=models.CASCADE)
     cashbox=models.ForeignKey(CashBox, verbose_name='الصندوق', null=True, blank=True, on_delete=models.SET_NULL)
     amount=models.DecimalField('المبلغ', max_digits=14, decimal_places=2)
     method=models.CharField('طريقة الدفع', max_length=30, choices=METHOD_CHOICES, default='cash')
