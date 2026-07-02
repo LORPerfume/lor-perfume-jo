@@ -337,13 +337,23 @@ def export_inventory_csv(request):
     writer=csv.writer(response); writer.writerow(['SKU','Product','Category','Current Stock','Low Stock Alert','Status','Selling Price','Cost Price'])
     for p in Product.objects.all(): writer.writerow([p.sku,p.name,p.category,p.stock_quantity,p.low_stock_alert,p.stock_status,p.selling_price,p.cost_price])
     return response
-    @require_POST
 @login_required
-def order_quick_update(request, pk):
-    obj = get_object_or_404(Order, pk=pk)
+def export_inventory_csv(request):
+    response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
+    response['Content-Disposition'] = 'attachment; filename="inventory_report.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['SKU','Product','Category','Current Stock','Low Stock Alert','Status','Selling Price','Cost Price'])
 
-    obj.status = request.POST.get('status', obj.status)
-    obj.payment_method = request.POST.get('payment_method', obj.payment_method)
-    obj.save()
+    for p in Product.objects.all():
+        writer.writerow([
+            p.sku,
+            p.name,
+            p.category,
+            p.stock_quantity,
+            p.low_stock_alert,
+            p.stock_status,
+            p.selling_price,
+            p.cost_price
+        ])
 
-    return redirect('order_list')
+    return response
