@@ -337,3 +337,13 @@ def export_inventory_csv(request):
     writer=csv.writer(response); writer.writerow(['SKU','Product','Category','Current Stock','Low Stock Alert','Status','Selling Price','Cost Price'])
     for p in Product.objects.all(): writer.writerow([p.sku,p.name,p.category,p.stock_quantity,p.low_stock_alert,p.stock_status,p.selling_price,p.cost_price])
     return response
+    @require_POST
+@login_required
+def order_quick_update(request, pk):
+    obj = get_object_or_404(Order, pk=pk)
+
+    obj.status = request.POST.get('status', obj.status)
+    obj.payment_method = request.POST.get('payment_method', obj.payment_method)
+    obj.save()
+
+    return redirect('order_list')
