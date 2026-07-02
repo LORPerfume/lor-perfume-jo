@@ -193,9 +193,9 @@ def export_receivables_xlsx(request):
 def first_setup(request):
     User = get_user_model()
 
-    if User.objects.exists():
-        return redirect('login')
-
+if User.objects.filter(is_superuser=True).exists():
+    return redirect('login')
+    
     error = ''
 
     if request.method == 'POST':
