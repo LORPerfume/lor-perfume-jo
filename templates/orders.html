@@ -1,2 +1,0 @@
-{% extends 'base.html' %}{% block content %}
-<h3 class="mb-3">كل الطلبات</h3><form class="row g-2 mb-3"><div class="col-md-3"><input class="form-control" name="q" value="{{q}}" placeholder="بحث بالعميل أو الطلب"></div><div class="col-md-3"><select name="status" class="form-select"><option value="">كل الحالات</option>{% for s in statuses %}<option {% if status==s %}selected{% endif %}>{{s}}</option>{% endfor %}</select></div><div class="col-md-2"><button class="btn btn-dark">بحث</button></div></form>{% include 'orders_table.html' %}{% endblock %}
