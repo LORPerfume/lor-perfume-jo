@@ -192,10 +192,6 @@ def export_receivables_xlsx(request):
     return _xlsx('receivables.xlsx', ['Order','Customer','Phone','Product','Type','Delivery Company','Total','Paid','Remaining','Status'], rows)
 def first_setup(request):
     User = get_user_model()
-
-    if User.objects.filter(is_superuser=True).exists():
-        return redirect('login')
-
     error = ''
 
     if request.method == 'POST':
@@ -210,10 +206,12 @@ def first_setup(request):
         elif len(password1) < 6:
             error = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'
         else:
-            user = User.objects.create_superuser(
-                username=username,
-                password=password1
-            )
+            user, created = User.objects.get_or_create(username=username)
+            user.is_staff = True
+            user.is_superuser = True
+            user.set_password(password1)
+            user.save()
+
             login(request, user)
             return redirect('dashboard')
 
