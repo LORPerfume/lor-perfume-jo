@@ -1,1 +1,0 @@
-{% extends 'core/base.html' %}{% block page_title %}{{ title }}{% endblock %}{% block content %}<section class="panel form-panel"><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn primary">حفظ</button><a class="btn" href="javascript:history.back()">رجوع</a></form></section>{% endblock %}
