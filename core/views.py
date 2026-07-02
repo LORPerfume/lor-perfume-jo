@@ -383,6 +383,12 @@ def order_quick_update(request, pk):
     if payment_method:
         obj.payment_method = payment_method
 
+    if obj.payment_method == 'delivery' and not obj.delivery_company:
+        messages.error(request, 'لا يمكن تحويل الطلب إلى ذمة شركة التوصيل بدون اختيار شركة توصيل.')
+        return redirect('order_list')
+
     obj.save()
+
+    messages.success(request, 'تم تحديث الحالة وطريقة الدفع.')
 
     return redirect('order_list')
