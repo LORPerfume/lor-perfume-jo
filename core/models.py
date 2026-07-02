@@ -89,8 +89,17 @@ class Order(TimeStampedModel):
     discount=models.DecimalField('خصم', max_digits=12, decimal_places=2, default=0)
     delivery_company=models.ForeignKey(DeliveryCompany, verbose_name='شركة/شريك', null=True, blank=True, on_delete=models.SET_NULL)
     delivery_fee=models.DecimalField('أجرة/تكلفة إضافية', max_digits=12, decimal_places=2, default=0)
-    PAYMENT_METHOD_CHOICES=[('cash','نقدي'),('cliq','كليك'),('bank','تحويل بنكي'),('card','بطاقة/فيزا'),('delivery','ذمم شركة التوصيل'),('wallet','محفظة إلكترونية'),('other','أخرى')]
-    payment_method=models.CharField('طريقة الدفع المتفق عليها', max_length=30, choices=PAYMENT_METHOD_CHOICES, default='delivery', db_index=True)
+    PAYMENT_METHOD_CHOICES=[
+    ('unpaid','غير مدفوع'),
+    ('cash','نقدي'),
+    ('cliq','كليك'),
+    ('bank','تحويل بنكي'),
+    ('card','بطاقة/فيزا'),
+    ('delivery','ذمم شركة التوصيل'),
+    ('wallet','محفظة إلكترونية'),
+    ('other','أخرى')
+]
+    payment_method=models.CharField('طريقة الدفع المتفق عليها', max_length=30, choices=PAYMENT_METHOD_CHOICES, default='unpaid', db_index=True)
     status=models.CharField('حالة الطلب/المعاملة', max_length=30, choices=STATUS_CHOICES, default='new', db_index=True)
     payment_status=models.CharField('حالة الدفع', max_length=30, choices=PAYMENT_STATUS, default='unpaid', db_index=True)
     priority=models.CharField('الأولوية', max_length=20, choices=PRIORITY_CHOICES, default='normal')
@@ -128,12 +137,11 @@ class Order(TimeStampedModel):
         if self.status=='delivered':
             InventoryMovement.objects.get_or_create(product=self.product, order=self, movement_type='out', reference=f'تسليم أوردر #{self.id}', defaults={'quantity':self.quantity,'date':timezone.now(),'notes':'خروج تلقائي عند تحويل حالة الأوردر إلى تم التسليم'})
     def __str__(self): return f'#{self.id} - {self.customer.name}'
-
 class Payment(models.Model):
     METHOD_CHOICES = [
         ('unpaid', 'غير مدفوع'),
         ('cash', 'نقدي'),
-        ('click', 'كليك'),
+        ('cliq', 'كليك'),
         ('bank', 'تحويل بنكي'),
         ('card', 'بطاقة/فيزا'),
         ('delivery', 'ذمم شركة التوصيل'),
@@ -141,38 +149,61 @@ class Payment(models.Model):
         ('other', 'أخرى'),
     ]
 
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    method = models.CharField(max_length=20, choices=METHOD_CHOICES, default='unpaid')
-    payment_date = models.DateTimeField(default=timezone.now)
-    notes = models.TextField(blank=True)
+    order = models.ForeignKey(
+        Order,
+        verbose_name='الطلب/المعاملة',
+        related_name='payments',
+        on_delete=models.CASCADE
+    )
+    cashbox = models.ForeignKey(
+        CashBox,
+        verbose_name='الصندوق',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL
+    )
+    amount = models.DecimalField('المبلغ', max_digits=14, decimal_places=2)
+    method = models.CharField('طريقة الدفع', max_length=30, choices=METHOD_CHOICES, default='cash')
+    payment_date = models.DateTimeField('تاريخ الدفع', default=timezone.now)
+    reference = models.CharField('مرجع العملية', max_length=120, blank=True)
+    notes = models.TextField('ملاحظات', blank=True)
 
     class Meta:
+        verbose_name = 'دفعة'
+        verbose_name_plural = 'الدفعات'
         ordering = ['-payment_date']
 
-    def __str__(self):
-        return f'{self.order} - {self.amount}'
-        order=models.ForeignKey(Order, verbose_name='الطلب/المعاملة', related_name='payments', on_delete=models.CASCADE)
-    cashbox=models.ForeignKey(CashBox, verbose_name='الصندوق', null=True, blank=True, on_delete=models.SET_NULL)
-    amount=models.DecimalField('المبلغ', max_digits=14, decimal_places=2)
-    method=models.CharField('طريقة الدفع', max_length=30, choices=METHOD_CHOICES, default='cash')
-    payment_date=models.DateTimeField('تاريخ الدفع', default=timezone.now)
-    reference=models.CharField('مرجع العملية', max_length=120, blank=True)
-    notes=models.TextField('ملاحظات', blank=True)
-    class Meta: verbose_name='دفعة'; verbose_name_plural='الدفعات'; ordering=['-payment_date']
-    def save(self,*args,**kwargs):
-        if not self.cashbox_id:
-            label=dict(self.METHOD_CHOICES).get(self.method, 'أخرى')
-            box_name=f'صندوق {label}'
-            self.cashbox, _ = CashBox.objects.get_or_create(name=box_name, defaults={'currency':'JOD','notes':'تم إنشاؤه تلقائياً حسب طريقة الدفع'})
-        super().save(*args,**kwargs)
-        self.order.refresh_payment_status()
-        if self.cashbox:
-            CashTransaction.objects.update_or_create(source_payment=self, defaults={'cashbox':self.cashbox,'transaction_type':'in','amount':self.amount,'description':f'تحصيل {self.get_method_display()} على أوردر #{self.order.id}','date':self.payment_date})
-    def __str__(self): return f'{self.amount} - #{self.order.id}'
+    def save(self, *args, **kwargs):
+        if not self.cashbox_id and self.method not in ['unpaid', 'delivery']:
+            label = dict(self.METHOD_CHOICES).get(self.method, 'أخرى')
+            box_name = f'صندوق {label}'
+            self.cashbox, _ = CashBox.objects.get_or_create(
+                name=box_name,
+                defaults={
+                    'currency': 'JOD',
+                    'notes': 'تم إنشاؤه تلقائياً حسب طريقة الدفع'
+                }
+            )
 
-class CashTransaction(TimeStampedModel):
-    TYPE_CHOICES=[('in','قبض'),('out','صرف')]
+        super().save(*args, **kwargs)
+
+        self.order.refresh_payment_status()
+
+        if self.cashbox and self.amount > 0:
+            CashTransaction.objects.update_or_create(
+                source_payment=self,
+                defaults={
+                    'cashbox': self.cashbox,
+                    'transaction_type': 'in',
+                    'amount': self.amount,
+                    'description': f'تحصيل {self.get_method_display()} على أوردر #{self.order.id}',
+                    'date': self.payment_date
+                }
+            )
+
+    def __str__(self):
+        return f'{self.amount} - #{self.order.id}'
+        TYPE_CHOICES=[('in','قبض'),('out','صرف')]
     cashbox=models.ForeignKey(CashBox, verbose_name='الصندوق', related_name='transactions', on_delete=models.CASCADE)
     transaction_type=models.CharField('نوع الحركة', max_length=10, choices=TYPE_CHOICES)
     amount=models.DecimalField('المبلغ', max_digits=14, decimal_places=2)
