@@ -23,10 +23,14 @@ class DeliveryCompanyForm(BaseForm):
         fields = ['name','phone','default_fee','notes','is_active']
 
 class CashBoxForm(BaseForm):
-    class Meta:
-        model = CashBox
-        fields = ['name','box_type','opening_balance','currency','notes']
-
+class Meta:
+    model = CashBox
+    fields = [
+        'name',
+        'opening_balance',
+        'currency',
+        'notes',
+    ]
 class InventoryInForm(BaseForm):
     class Meta:
         model = InventoryMovement
