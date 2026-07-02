@@ -129,7 +129,6 @@ class Order(TimeStampedModel):
             InventoryMovement.objects.get_or_create(product=self.product, order=self, movement_type='out', reference=f'تسليم أوردر #{self.id}', defaults={'quantity':self.quantity,'date':timezone.now(),'notes':'خروج تلقائي عند تحويل حالة الأوردر إلى تم التسليم'})
     def __str__(self): return f'#{self.id} - {self.customer.name}'
 
-class Payment(TimeStampedModel):
 class Payment(models.Model):
     METHOD_CHOICES = [
         ('unpaid', 'غير مدفوع'),
@@ -141,7 +140,19 @@ class Payment(models.Model):
         ('wallet', 'محفظة إلكترونية'),
         ('other', 'أخرى'),
     ]
-    order=models.ForeignKey(Order, verbose_name='الطلب/المعاملة', related_name='payments', on_delete=models.CASCADE)
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    method = models.CharField(max_length=20, choices=METHOD_CHOICES, default='unpaid')
+    payment_date = models.DateTimeField(default=timezone.now)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-payment_date']
+
+    def __str__(self):
+        return f'{self.order} - {self.amount}'
+        order=models.ForeignKey(Order, verbose_name='الطلب/المعاملة', related_name='payments', on_delete=models.CASCADE)
     cashbox=models.ForeignKey(CashBox, verbose_name='الصندوق', null=True, blank=True, on_delete=models.SET_NULL)
     amount=models.DecimalField('المبلغ', max_digits=14, decimal_places=2)
     method=models.CharField('طريقة الدفع', max_length=30, choices=METHOD_CHOICES, default='cash')
