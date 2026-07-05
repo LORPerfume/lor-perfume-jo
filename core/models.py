@@ -118,6 +118,7 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, related_name='orders', verbose_name='العميل')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='orders', verbose_name='المنتج')
     quantity = models.PositiveIntegerField('الكمية', default=1)
+    returned_quantity = models.PositiveIntegerField('الكمية المرتجعة', default=0)
     unit_price = models.DecimalField('سعر الوحدة', max_digits=12, decimal_places=2)
     discount = models.DecimalField('خصم', max_digits=12, decimal_places=2, default=0)
     delivery_fee = models.DecimalField('أجرة التوصيل/الإضافات', max_digits=12, decimal_places=2, default=0)
